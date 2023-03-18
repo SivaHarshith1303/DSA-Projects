@@ -1,0 +1,344 @@
+//Phone Directory using Doubly-Linked list.
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct Phone
+{
+    long int phno;
+    char name[30];
+    char email[30];
+};
+struct node
+{
+    struct Phone p;
+    struct node *lptr;
+    struct node *rptr;
+};
+struct node *head=NULL,*tail,*newnode;
+void add_contact();
+void search_contact();
+void display_contact();
+void edit_contact();
+void delete_contact();
+int number_of_contacts();
+void delete_begin(struct node *);
+void delete_end(struct node *);
+void delete_pos(struct node *);
+void main()
+{
+    int choice=1,choice1;
+    printf("\t\t\t\t****PHONE DIRECTORY USING DOUBLY-LINKED LIST*****\n");
+    while(choice)
+    {
+        printf("1.Adding of Contact\n2.Searching of Contact\n3.Dispalying Contact\n4.Editing of Contact\n5.Deleting of Contact\n6.Exit\n");
+        printf("Enter your choice\n");
+        scanf("%d",&choice1);
+        switch(choice1)
+        {
+            case 1:add_contact();break;
+            case 2:search_contact();break;
+            case 3:display_contact();break;
+            case 4:edit_contact();break;
+            case 5:delete_contact();break;
+            case 6:exit(0);
+            default:printf("Enter right choice\n");
+        }
+    }
+}
+void add_contact()
+{
+    newnode=(struct node *)malloc(sizeof(struct node));
+    printf("Enter name:\n");
+    scanf("%s",newnode->p.name);
+    printf("Enter phno\n");
+    scanf("%ld",&newnode->p.phno);
+    printf("Enter email\n");
+    scanf("%s",newnode->p.email);
+    newnode->lptr=newnode->rptr=NULL;
+    if(head==NULL)
+    {
+        head=tail=newnode;
+    }
+    else
+    {
+        tail->rptr=newnode;
+        newnode->lptr=tail;
+        tail=newnode;
+    }
+    printf("\n");
+    printf("---------------------------------------------\n");
+    printf("\n");
+}
+void search_contact()
+{
+    struct node *temp;
+    temp=head;
+    int flag=0;
+    int choice2;
+    printf("Which way you want to search Contact\n");
+    printf("1.Name\n2.Phno\n");
+    scanf("%d",&choice2);
+    if(choice2==1)
+    {
+        char name1[30];
+        printf("Enter the name you want to search\n");
+        scanf("%s",name1);
+        while(temp!=0)
+        {
+            if(strcmp(temp->p.name,name1)==0)
+            {
+                flag=1;
+                break;
+            }
+            temp=temp->rptr;
+        }
+        if(flag==1)
+        {
+            printf("Search successful\n");
+            printf("%s contact is found\n",name1);
+        }
+        else
+        {
+            printf("Search unsuccessful\n");
+            printf("%s contact is not found\n",name1);
+        }
+    }
+    else if(choice2==2)
+    {
+        long int phno1;
+        printf("Enter the number you want to search\n");
+        scanf("%ld",&phno1);
+        while(temp!=0)
+        {
+            if(temp->p.phno==phno1)
+            {
+                flag=1;
+                break;
+            }
+            temp=temp->rptr;
+        }
+        if(flag==1)
+        {
+            printf("Search successful\n");
+            printf("%ld contact is found\n",phno1);
+        }
+        else
+        {
+            printf("Search unsuccessful\n");
+            printf("%ld contact is not found\n",phno1);
+        }
+    }
+    else
+    {
+        printf("Enter the right choice\n");
+    }
+    printf("\n");
+    printf("---------------------------------------------\n");
+    printf("\n");
+}
+void display_contact()
+{
+    struct node *temp;
+    temp=head;
+    printf("Total number of Contacts: %d\n",number_of_contacts());
+    printf("Name\t\tPhno\t\tE-mail id\n");
+    while(temp!=0)
+    {
+        printf("%s\t\t%ld\t\t%s\n",temp->p.name,temp->p.phno,temp->p.email);
+        temp=temp->rptr;
+    }
+    printf("\n");
+    printf("---------------------------------------------\n");
+    printf("\n");
+}
+void edit_contact()
+{
+    int choice2,flag=0;
+    long int phno2;
+    char name2[30],e_mail[30];
+    printf("Pick which one you want to edit\n");
+    printf("1.Name\n2.Phno\n3.E-mail id\n");
+    scanf("%d",&choice2);
+    if(choice2==1)
+    {
+        printf("Enter the name you want to edit\n");
+        scanf("%s",name2);
+    }
+    else if(choice2==2)
+    {
+        printf("Enter the phno you want to edit\n");
+        scanf("%ld",&phno2);
+    }
+    else if(choice2==3)
+    {
+        printf("Enter the email you want to edit\n");
+        scanf("%s",e_mail);
+    }
+    else
+    {
+        printf("Enter the right choice\n");
+    }
+    struct node *temp;
+    temp=head;
+    while(temp!=0)
+    {
+        if(choice2==1)
+        {
+            if(strcmp(temp->p.name,name2)==0)
+            {
+                printf("Enter the new name\n");
+                scanf("%s",temp->p.name);
+                flag=1;
+                break;
+            }
+        }
+        else if(choice2==2)
+        {
+            if(temp->p.phno==phno2)
+            {
+                printf("Enter the new phone number\n");
+                scanf("%ld",&temp->p.phno);
+                flag=1;
+                break;
+            }
+        }
+        else if(choice2==3)
+        {
+            if(strcmp(temp->p.email,e_mail)==0)
+            {
+                printf("Enter the new email id you want to change\n");
+                scanf("%s",temp->p.email);
+                flag=1;
+                break;
+            }
+        }
+        temp=temp->rptr;
+    }
+    if(flag==0)
+    {
+        printf("The Contact which you want to edit does not exist\n");
+    }
+    printf("\n");
+    printf("---------------------------------------------\n");
+    printf("\n");
+}
+int number_of_contacts()
+{
+    int count=0;
+    struct node *temp;
+    temp=head;
+    while(temp!=NULL)
+    {
+        temp=temp->rptr;
+        count++;
+    }
+    return count;
+}
+void delete_contact()
+{
+    int choice3,flag=0;
+    char name3[30],email1[30];
+    long int phno3;
+    printf("In which way you want to delete the contact\n");
+    printf("1.Name\n2.Phone number\n");
+    scanf("%d",&choice3);
+    struct node *temp;
+    temp=head;
+    if(choice3==1)
+    {
+        printf("Enter the name you want to delete\n");
+        scanf("%s",name3);
+        while(temp!=NULL)
+        {
+            if(strcmp(head->p.name,name3)==0)
+            {
+                flag=1;
+                printf("%s Contact is deleted\n",head->p.name);
+                delete_begin(temp);
+                break;
+            }
+            else if(strcmp(tail->p.name,name3)==0)
+            {
+                flag=1;
+                temp=tail;
+                printf("%s Contact is deleted\n",tail->p.name);
+                delete_end(temp);
+                break;
+            }
+            else
+            {
+                if(strcmp(temp->p.name,name3)==0)
+                {
+                    flag=1;
+                    printf("%s Contact is deleted\n",temp->p.name);
+                    delete_pos(temp);
+                    break;
+                }
+                temp=temp->rptr;
+            }
+        }
+        if(flag==0)
+        printf("Sorry!The Contact Which you want to delete does not exist\n");
+    }
+    else if(choice3==2)
+    {
+        printf("Enter the number you want to delete\n");
+        scanf("%ld",&phno3);
+        while(temp!=NULL)
+        {
+            if(head->p.phno==phno3)
+            {
+                flag=1;
+                printf("%ld Contact is deleted\n",head->p.phno);
+                delete_begin(temp);
+                break;
+            }
+            else if(tail->p.phno==phno3)
+            {
+                flag=1;
+                temp=tail;
+                printf("%ld Contact is deleted\n",tail->p.phno);
+                delete_end(temp);
+                break;
+            }
+            else
+            {
+                if(temp->p.phno==phno3)
+                {
+                    flag=1;
+                    printf("%ld Contact is deleted\n",temp->p.phno);
+                    delete_pos(temp);
+                    break;
+                }
+                temp=temp->rptr;
+            }
+        }
+        if(flag==0)
+        printf("Sorry!The Contact Which you want to delete does not exist\n");
+    }
+    else
+    {
+        printf("Enter the right choice\n");
+    }
+    printf("\n");
+    printf("---------------------------------------------\n");
+    printf("\n");
+}
+void delete_begin(struct node *temp1)
+{
+    head=head->rptr;
+    head->lptr=NULL;
+    free(temp1);
+}
+void delete_end(struct node *temp1)
+{
+    tail=tail->lptr;
+    tail->rptr=NULL;
+    free(temp1);
+}
+void delete_pos(struct node *temp1)
+{
+    temp1->lptr->rptr=temp1->rptr;
+    temp1->rptr->lptr=temp1->lptr;
+    free(temp1);
+}
